@@ -1,0 +1,5 @@
+Name: users
+Host: 0.0.0.0
+Port: 8888
+Mysql:
+  DataSource: root:wwy040609@tcp(127.0.0.1:3306)/zeroframework_study?charset=utf8mb4&parseTime=true&loc=Local

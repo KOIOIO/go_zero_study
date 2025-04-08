@@ -1,0 +1,32 @@
+type LoginRequest {
+	UserName string `json:"userName"`
+	Password string `json:"password"`
+}
+
+type UserInfoResponse {
+	UserName string `json:"userName"`
+	Addr     string `json:"addr"`
+	Id       uint   `json:"id"`
+}
+
+//相当于给login没有加上jwt校验
+@server (
+	prefix: /api/users
+)
+service users {
+	@handler login
+	post /login (LoginRequest) returns (string)
+}
+
+//相当于给userinfo加上jwt校验
+@server (
+	prefix: /api/users
+	jwt:    Auth
+)
+service users {
+	@handler userInfo
+	get /info returns (UserInfoResponse)
+}
+
+// goctl api go -api v1.api -dir .
+// docker run -d --name swag -p 8087:8080 -e SWAGGER_JSON=/opt/app.json -v D:\Go\src\go-zeroframework\api_study\user\api_swagger\doc\:/opt swaggerapi/swagger-ui
