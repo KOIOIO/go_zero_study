@@ -2,9 +2,8 @@ package logic
 
 import (
 	"context"
-
-	"go-zeroframework/user/rpc/internal/svc"
-	"go-zeroframework/user/rpc/types/user"
+	"go-zeroframework/demo/user/rpc/internal/svc"
+	"go-zeroframework/demo/user/rpc/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
