@@ -3,8 +3,9 @@ package logic
 import (
 	"context"
 	model2 "go-zeroframework/rpc_study/user_api_rpc/model"
-	"go-zeroframework/rpc_study/user_gorm/rpc/internal/svc"
-	"go-zeroframework/rpc_study/user_gorm/rpc/types/user"
+
+	"go-zeroframework/rpc_study/user_api_rpc/rpc/internal/svc"
+	"go-zeroframework/rpc_study/user_api_rpc/rpc/types/user"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,14 +24,14 @@ func NewUserCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserCr
 	}
 }
 
-func (l *UserCreateLogic) UserCreate(in *user.UserCreateRequest) (*user.UserCreateResponse, error) {
-	// todo: add your logic here and delete this line
+func (l *UserCreateLogic) UserCreate(in *user.UserCreateRequest) (pd *user.UserCreateResponse, err error) {
+
+	pd = new(user.UserCreateResponse)
 	var model model2.User
-	err := l.svcCtx.DB.Take(&model, "username = ?", in.UserName).Error
+	err = l.svcCtx.DB.Take(&model, "username = ?", in.UserName).Error
 	if err == nil {
-		return &user.UserCreateResponse{
-			Err: "用户已存在",
-		}, nil
+		pd.Err = "该用户名已存在"
+		return
 	}
 	model = model2.User{
 		Username: in.UserName,
@@ -38,13 +39,11 @@ func (l *UserCreateLogic) UserCreate(in *user.UserCreateRequest) (*user.UserCrea
 	}
 	err = l.svcCtx.DB.Create(&model).Error
 	if err != nil {
-		return &user.UserCreateResponse{
-			Err: "用户创建失败",
-		}, nil
+		logx.Error(err)
+		pd.Err = err.Error()
+		err = nil
+		return
 	}
-
-	return &user.UserCreateResponse{
-		UserId: uint32(model.ID),
-		Err:    "200",
-	}, nil
+	pd.UserId = uint32(model.ID)
+	return
 }
